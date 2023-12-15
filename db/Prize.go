@@ -1,47 +1,74 @@
 package db
 
 type Prize struct {
+	EventID  string
 	ID       string
 	Name     string
 	WinnerID string
 }
 
-func (prize *Prize) Create() {
+func (prize *Prize) Insert() {
 	fsc, ctx := getClient()
 
 	fsc.NewRequest().CreateEntities(ctx, prize)()
 }
 
-func (prize *Prize) AssignWinner(winnerID string) {
+func (prize *Prize) AssignWinner(winnerID string) (err error) {
 	fsc, ctx := getClient()
 
-	fsc.NewRequest().GetEntities(ctx, prize)()
+	_, err = fsc.NewRequest().GetEntities(ctx, prize)()
+	if err != nil {
+		return
+	}
+
 	prize.WinnerID = winnerID
-	fsc.NewRequest().UpdateEntities(ctx, prize)()
+	err = fsc.NewRequest().UpdateEntities(ctx, prize)()
+
+	return
 }
 
-func GetAvailablePrizes() []Prize {
+func (prize *Prize) AssignEvent(eventID string) (err error) {
+	fsc, ctx := getClient()
+
+	_, err = fsc.NewRequest().GetEntities(ctx, prize)()
+	if err != nil {
+		return
+	}
+
+	prize.EventID = eventID
+	err = fsc.NewRequest().UpdateEntities(ctx, prize)()
+
+	return
+}
+
+func NewPrize(name string) (prize *Prize) {
+	prize = &Prize{Name: name}
+
+	return
+}
+
+func GetAvailablePrizes() (prizes []Prize, err error) {
 	fsc, ctx := getClient()
 
 	query := fsc.Client.Collection("Prize").Where("winnerid", "==", "")
+	err = fsc.NewRequest().QueryEntities(ctx, query, &prizes)()
 
-	result := make([]Prize, 0)
-	_ = fsc.NewRequest().QueryEntities(ctx, query, &result)()
-
-	return result
+	return
 }
 
-func GetPastWinnerIDs() []string {
+func GetPastWinnerIDs() (pastWinnerIDs []string, err error) {
 	fsc, ctx := getClient()
 
-	prizesQuery := fsc.Client.Collection("Prize").Where("winnerid", "!=", "")
 	wonPrizes := make([]Prize, 0)
-	_ = fsc.NewRequest().QueryEntities(ctx, prizesQuery, &wonPrizes)()
+	prizesQuery := fsc.Client.Collection("Prize").Where("winnerid", "!=", "")
+	err = fsc.NewRequest().QueryEntities(ctx, prizesQuery, &wonPrizes)()
+	if err != nil {
+		return
+	}
 
-	pastWinnerIDs := []string{}
 	for _, wonPrize := range wonPrizes {
 		pastWinnerIDs = append(pastWinnerIDs, wonPrize.WinnerID)
 	}
 
-	return pastWinnerIDs
+	return
 }
