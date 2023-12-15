@@ -14,7 +14,7 @@ func getClient() (*firestorm.FSClient, context.Context) {
 	ctx := context.Background()
 	app, err := firebase.NewApp(ctx, nil, opt)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatalln("Error occured while trying to connect to the DB: ", err)
 	}
 
 	client, _ := app.Firestore(ctx)

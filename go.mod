@@ -5,7 +5,6 @@ go 1.21.5
 require (
 	firebase.google.com/go v3.13.0+incompatible
 	github.com/bwmarrin/discordgo v0.27.1
-	github.com/joho/godotenv v1.5.1
 	github.com/jschoedt/go-firestorm v0.0.0-20211213235205-e89522d7cefb
 	google.golang.org/api v0.154.0
 )

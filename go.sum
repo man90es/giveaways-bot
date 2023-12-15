@@ -89,8 +89,6 @@ github.com/googleapis/gax-go/v2 v2.12.0/go.mod h1:y+aIqrI5eb1YGMVJfuV3185Ts/D7qK
 github.com/gorilla/websocket v1.4.2 h1:+/TMaTYc4QFitKJxsQ7Yye35DkWvkdLcvGKqM+x0Ufc=
 github.com/gorilla/websocket v1.4.2/go.mod h1:YR8l580nyteQvAITg2hZ9XVh4b55+EU/adAjf1fMHhE=
 github.com/hashicorp/golang-lru v0.5.0/go.mod h1:/m3WP610KZHVQ1SGc6re/UDhFvYD7pJ4Ao+sR/qLZy8=
-github.com/joho/godotenv v1.5.1 h1:7eLL/+HRGLY0ldzfGMeQkb7vMd0as4CfYvUVzLqw0N0=
-github.com/joho/godotenv v1.5.1/go.mod h1:f4LDr5Voq0i2e/R5DDNOoa2zzDfwtkZa6DnEwAbqwq4=
 github.com/jschoedt/go-firestorm v0.0.0-20211213235205-e89522d7cefb h1:H3DxNmMf4rbpBoQebZKLazLVwieqoNxb08gdT53rvGk=
 github.com/jschoedt/go-firestorm v0.0.0-20211213235205-e89522d7cefb/go.mod h1:imNBRuY63ryRBTK0T3wUG3sdO+0aBnB7kZva5UvYpQM=
 github.com/jschoedt/go-structmapper v0.0.0-20211213232249-19a5c78afaa6/go.mod h1:x12mRCBeG7r+5pWtMUyfJYX4VXHGoAwMdvkatcx07Oo=

@@ -6,22 +6,14 @@ import (
 	"os/signal"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/joho/godotenv"
 	"github.com/man90es/giveaways-bot/db"
 	"github.com/man90es/giveaways-bot/raffle"
 )
 
 func getDiscordSession() *discordgo.Session {
-	err := godotenv.Load()
+	session, err := discordgo.New("Bot " + db.Config[db.ConfigKeyDiscordAPIToken])
 	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-
-	APIToken := os.Getenv("DISCORD_API_TOKEN")
-
-	session, err := discordgo.New("Bot " + APIToken)
-	if err != nil {
-		log.Fatal(err)
+		log.Fatal("Error occured while trying to create a Discord session: ", err.Error())
 	}
 
 	session.AddHandler(func(s *discordgo.Session, r *discordgo.Ready) {
@@ -30,27 +22,26 @@ func getDiscordSession() *discordgo.Session {
 	session.Identify.Intents = discordgo.IntentsAllWithoutPrivileged
 	err = session.Open()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("Error occured while trying to open a Discord session: ", err.Error())
 	}
 
 	return session
 }
 
 func main() {
-	err := godotenv.Load()
+	err := db.LoadConfig()
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		log.Fatal("Error loading config: ", err.Error())
 		return
 	}
-
-	guildID := os.Getenv("GIVEAWAY_GUILD_ID")
 
 	session := getDiscordSession()
 	defer session.Close()
 
-	events, err := session.GuildScheduledEvents(guildID, false)
+	events, err := session.GuildScheduledEvents(db.Config[db.ConfigKeyGiveawayGuildlID], false)
 	if err != nil {
-		log.Fatal(err)
+		log.Println("Error occured while trying to retrieve Discord events: ", err.Error())
+		return
 	}
 
 	for _, event := range events {
@@ -64,7 +55,7 @@ func main() {
 	session.AddHandler(func(_ *discordgo.Session, updatedEvent *discordgo.GuildScheduledEventUpdate) {
 		event, err := db.GetEventByID(updatedEvent.ID)
 		if err != nil {
-			log.Fatal(err.Error())
+			log.Println("Error occured while trying to retrieve an event from the DB: ", err.Error())
 			return
 		}
 
