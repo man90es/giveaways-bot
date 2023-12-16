@@ -59,6 +59,7 @@ func SelectWinner(session *discordgo.Session, dcEvent *discordgo.GuildScheduledE
 		return
 	}
 
-	announcement := fmt.Sprintf("Congrats %v, you won!\nPlease DM <@!%v> to claim your %v", winner.Mention(), db.Config[db.ConfigKeyGiveawayOrganiserID], prize.Name)
-	session.ChannelMessageSend(db.Config[db.ConfigKeyGiveawayChannelID], announcement)
+	announcementLn1 := fmt.Sprintf("%v winner is %v, congrats!", dcEvent.Name, winner.Mention())
+	announcementLn2 := fmt.Sprintf("Please DM <@!%v> to claim your %v", db.Config[db.ConfigKeyGiveawayOrganiserID], prize.Name)
+	session.ChannelMessageSend(db.Config[db.ConfigKeyGiveawayChannelID], announcementLn1+"\n"+announcementLn2)
 }
