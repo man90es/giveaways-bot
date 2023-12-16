@@ -3,10 +3,11 @@ package db
 type configKey string
 
 const (
-	ConfigKeyDiscordAPIToken   configKey = "discordapitoken"
-	ConfigKeyGiveawayChannelID configKey = "giveawaychannelid"
-	ConfigKeyGiveawayGuildlID  configKey = "giveawayguildid"
-	ConfigKeyGiveawayRoleID    configKey = "giveawayroleid"
+	ConfigKeyDiscordAPIToken     configKey = "discordapitoken"
+	ConfigKeyGiveawayChannelID   configKey = "giveawaychannelid"
+	ConfigKeyGiveawayGuildlID    configKey = "giveawayguildid"
+	ConfigKeyGiveawayOrganiserID configKey = "giveawayorganiserid"
+	ConfigKeyGiveawayRoleID      configKey = "giveawayroleid"
 )
 
 type ConfigItem struct {
@@ -15,7 +16,7 @@ type ConfigItem struct {
 }
 
 var Config = map[configKey]string{}
-var configKeys = []configKey{ConfigKeyDiscordAPIToken, ConfigKeyGiveawayChannelID, ConfigKeyGiveawayGuildlID, ConfigKeyGiveawayRoleID}
+var configKeys = []configKey{ConfigKeyDiscordAPIToken, ConfigKeyGiveawayChannelID, ConfigKeyGiveawayGuildlID, ConfigKeyGiveawayRoleID, ConfigKeyGiveawayOrganiserID}
 
 func LoadConfig() (err error) {
 	fsc, ctx := getClient()

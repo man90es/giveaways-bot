@@ -1,6 +1,7 @@
 package raffle
 
 import (
+	"fmt"
 	"log"
 	"slices"
 
@@ -9,21 +10,7 @@ import (
 	"github.com/man90es/giveaways-bot/utils"
 )
 
-func RunRaffle(session *discordgo.Session, eventID string) {
-	availablePrizes, err := db.GetAvailablePrizes()
-	if err != nil {
-		log.Println("Error occured while trying to retrieve prizes from the DB: ", err.Error())
-		return
-	}
-
-	prize, err := utils.RandomChoice(availablePrizes)
-	if err != nil {
-		log.Println("Error occured while trying to select a prize: ", err.Error())
-		return
-	}
-
-	(&db.Prize{ID: prize.ID}).AssignEvent(eventID)
-
+func SelectWinner(session *discordgo.Session, dcEvent *discordgo.GuildScheduledEvent) {
 	members, err := session.GuildMembers(db.Config[db.ConfigKeyGiveawayGuildlID], "", 1e3)
 	if err != nil {
 		log.Println(err.Error())
@@ -59,6 +46,19 @@ func RunRaffle(session *discordgo.Session, eventID string) {
 		return
 	}
 
-	(&db.Prize{ID: prize.ID}).AssignWinner(winner.User.ID)
-	session.ChannelMessageSend(db.Config[db.ConfigKeyGiveawayChannelID], winner.Mention()+" won "+prize.Name)
+	prize, err := db.GetPrizeSelectedForEvent(dcEvent.ID)
+	if err != nil {
+		log.Println("Error occured while trying to retrieve a selected prize: ", err.Error())
+		return
+	}
+
+	log.Println(prize)
+	err = prize.AssignWinner(winner.User.ID)
+	if err != nil {
+		log.Println("Error occured while trying to assign a winner to the prize: ", err.Error())
+		return
+	}
+
+	announcement := fmt.Sprintf("Congrats %v, you won!\nPlease DM <@!%v> to claim your %v", winner.Mention(), db.Config[db.ConfigKeyGiveawayOrganiserID], prize.Name)
+	session.ChannelMessageSend(db.Config[db.ConfigKeyGiveawayChannelID], announcement)
 }

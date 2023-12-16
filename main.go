@@ -60,11 +60,17 @@ func main() {
 		}
 
 		isTrigger := event.TriggersRaffle
-		wasScheduled := event.Status == discordgo.GuildScheduledEventStatusScheduled
 		isActive := updatedEvent.Status == discordgo.GuildScheduledEventStatusActive
+		isCompleted := updatedEvent.Status == discordgo.GuildScheduledEventStatusCompleted
+		wasActive := event.Status == discordgo.GuildScheduledEventStatusActive
+		wasScheduled := event.Status == discordgo.GuildScheduledEventStatusScheduled
 
-		if isTrigger && wasScheduled && isActive {
-			raffle.RunRaffle(session, event.ID)
+		if isTrigger {
+			if wasScheduled && isActive {
+				raffle.SelectPrize(session, updatedEvent.GuildScheduledEvent)
+			} else if wasActive && isCompleted {
+				raffle.SelectWinner(session, updatedEvent.GuildScheduledEvent)
+			}
 		}
 
 		db.NewEventFromDiscordEvent(updatedEvent.GuildScheduledEvent).Upsert()

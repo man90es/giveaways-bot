@@ -56,6 +56,21 @@ func GetAvailablePrizes() (prizes []Prize, err error) {
 	return
 }
 
+func GetPrizeSelectedForEvent(eventID string) (prize *Prize, err error) {
+	fsc, ctx := getClient()
+
+	result := make([]Prize, 0)
+	query := fsc.Client.Collection("Prize").Where("eventid", "==", eventID)
+	err = fsc.NewRequest().QueryEntities(ctx, query, &result)()
+
+	if err != nil {
+		return
+	}
+
+	foundPrize := result[0]
+	return &foundPrize, nil
+}
+
 func GetPastWinnerIDs() (pastWinnerIDs []string, err error) {
 	fsc, ctx := getClient()
 
