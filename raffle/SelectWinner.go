@@ -13,7 +13,7 @@ import (
 func SelectWinner(session *discordgo.Session, dcEvent *discordgo.GuildScheduledEvent) {
 	members, err := session.GuildMembers(db.Config[db.ConfigKeyGiveawayGuildlID], "", 1e3)
 	if err != nil {
-		log.Println(err.Error())
+		log.Println("Error occured while trying to retrieve server members: ", err.Error())
 		return
 	}
 
@@ -52,7 +52,6 @@ func SelectWinner(session *discordgo.Session, dcEvent *discordgo.GuildScheduledE
 		return
 	}
 
-	log.Println(prize)
 	err = prize.AssignWinner(winner.User.ID)
 	if err != nil {
 		log.Println("Error occured while trying to assign a winner to the prize: ", err.Error())
